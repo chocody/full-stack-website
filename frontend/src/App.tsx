@@ -1,9 +1,12 @@
-import Game from './components/Game'
 import './App.css'
 
 function App() {
   return (
-    <Game />
+    <div className="App">
+      <header className="App-header">
+        <h1>Welcome to My React App</h1>
+      </header>
+    </div>
   )
 }
 
