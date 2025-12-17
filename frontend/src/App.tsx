@@ -1,11 +1,11 @@
-import './App.css'
+import bg from './assets/bg/forest.jpg'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Welcome to My React App</h1>
-      </header>
+    <div
+      className="min-h-screen w-screen bg-cover bg-center"
+      style={{ backgroundImage: `url(${bg})` }}
+    >
     </div>
   )
 }
