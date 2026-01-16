@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:18
+    container_name: newme-postgres
+    environment:
+      POSTGRES_USER: newme
+      POSTGRES_PASSWORD: newme_password
+      POSTGRES_DB: newme_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+volumes:
+  postgres_data:
