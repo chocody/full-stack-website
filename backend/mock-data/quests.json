@@ -1,13 +1,13 @@
 {
     "quests": [
         {
-            "id": "1",
+            "id": 1,
             "title": "First Quest",
             "description": "This is the first quest.",
             "is_completed": false
         },
         {
-            "id": "2",
+            "id": 2,
             "title": "Second Quest",
             "description": "This is the second quest.",
             "is_completed": true
