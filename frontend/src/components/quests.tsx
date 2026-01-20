@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus } from 'lucide-react';
+import { Checkbox } from "@/components/ui/checkbox"
 
 export const Quests = () => {
     const { data, isLoading } = useGetQuests();
@@ -57,11 +58,21 @@ export const Quests = () => {
             alert("Please input the title")
             return;
         }
-        createQuest({
-            title: formData.title,
-            description: formData.description,
-        });
-        setIsModalOpen(false)
+        createQuest(
+            {
+                title: formData.title,
+                description: formData.description,
+            },
+            {
+                onSuccess: () => {
+                    handleCloseModal();
+                    // Reset page to show new quest
+                    if (questItems.length % ITEMS_PER_PAGE === 0) {
+                        setPage(Math.ceil((questItems.length + 1) / ITEMS_PER_PAGE) - 1);
+                    }
+                }
+            }
+        );
     }
 
     return (
@@ -122,15 +133,16 @@ export const Quests = () => {
             <div className="w-60 h-110 bg-gray-200 border-6 border-black rounded-4xl flex flex-col gap-3 p-3">
                 {/* Quest items */}
                 <div className="flex flex-col gap-3 flex-1">
-                    {visibleItems.map((quest, index) => (
+                    {visibleItems.map((quest) => (
                         <div
-                            key={index}
+                            key={quest.id}
                             className="flex justify-start items-center w-53 h-13 !m-2 !mb-0 bg-white rounded-xl hover:bg-gray-400 cursor-pointer"
                         >
+                            <Checkbox className="!ml-2" />
                             <h3 className="font-semibold !ml-2">{quest.title}</h3>
                         </div>
                     ))}
-                    {visibleItems.length < 10 && (
+                    {visibleItems.length < ITEMS_PER_PAGE && (
                         <div className="flex justify-center items-center">
                             <Plus className="!mt-2 border-2 border-black rounded-full cursor-pointer" onClick={handleOpenModal}></Plus>
                         </div>
