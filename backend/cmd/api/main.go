@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
   	"gorm.io/gorm"
+	"github.com/rs/cors"
 	"os"
 
 	"backend/internal/quest"
@@ -15,8 +16,6 @@ import (
 )
 
 func main() {
-	r := mux.NewRouter()
-
 	// Load environment variables from .env file
 	err := godotenv.Load()
   	if err != nil {
@@ -44,13 +43,28 @@ func main() {
 	questRepo := repo.NewQuestRepository(db)
 	questHandler := &quest.Handler{Repo: questRepo}
 
+	// Declare rounter
+	r := mux.NewRouter()
+
+	// Configure CORS
+    corsHandler := cors.New(cors.Options{
+        AllowedOrigins:   []string{"http://localhost:5173", "https://localhost:8080"},
+        AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+        AllowedHeaders:   []string{"*"},
+        AllowCredentials: true,
+    }).Handler(r)
+
 	// Handler http API
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    w.Write([]byte("Backend is running..."))
+	}).Methods("GET")
+
 	r.HandleFunc("/quests", questHandler.GetAllQuests).Methods("GET")
 	r.HandleFunc("/quest", questHandler.CreateQuest).Methods("POST")
 
 	// Start server
 	log.Println("Server starting on :8080")
-	if err := http.ListenAndServe(":8080", r); err != nil {
+	if err := http.ListenAndServe(":8080", corsHandler); err != nil {
 		log.Fatal(err)
 	}
 }

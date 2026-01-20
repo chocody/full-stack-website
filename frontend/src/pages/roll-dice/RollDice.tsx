@@ -1,4 +1,4 @@
-import bg from "./assets/bg/table.jpg";
+import bg from "/src/assets/bg/table.jpg";
 import { useState } from "react";
 import {
     Dice1,
