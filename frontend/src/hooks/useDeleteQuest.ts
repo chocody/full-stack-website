@@ -1,15 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createQuest } from "./api-client-based/api-client";
+import { deleteQuest } from "./api-client-based/api-client";
 
-interface CreateQuestData {
-    title: string;
-    description: string;
-}
-
-export function useCreateQuest() {
+export function useDeleteQuest() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (data: CreateQuestData) => createQuest(data),
+        mutationFn: (id: number) => deleteQuest(id),
         onSuccess: () => {
             // Refresh the quests list after creating
             queryClient.invalidateQueries({ queryKey: ['getQuests'] });

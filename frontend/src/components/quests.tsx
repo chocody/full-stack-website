@@ -1,6 +1,8 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import { useGetQuests } from "../hooks/useGetQuests";
 import { useCreateQuest } from "../hooks/useCreateQuest";
+import { useDeleteQuest } from "../hooks/useDeleteQuest";
+import { useCheckedQuest } from "../hooks/useCheckedQuest";
 import {
     Dialog,
     DialogContent,
@@ -11,12 +13,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus } from 'lucide-react';
 import { Checkbox } from "@/components/ui/checkbox"
+import { Plus } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 export const Quests = () => {
     const { data, isLoading } = useGetQuests();
     const { mutate: createQuest, isPending } = useCreateQuest()
+    const { mutate: deleteQuest } = useDeleteQuest();
+    const { mutate: checkQuest } = useCheckedQuest();
 
     const questItems = data?.response || []
     const ITEMS_PER_PAGE = 5;
@@ -73,6 +78,14 @@ export const Quests = () => {
                 }
             }
         );
+    }
+
+    const handleDeleteQuest = (id: number) => {
+        deleteQuest(id);
+    }
+
+    const handleCheckQuest = (id: number, currentState: boolean) => {
+        checkQuest({ id, is_complete: !currentState });
     }
 
     return (
@@ -133,15 +146,22 @@ export const Quests = () => {
             <div className="w-60 h-110 bg-gray-200 border-6 border-black rounded-4xl flex flex-col gap-3 p-3">
                 {/* Quest items */}
                 <div className="flex flex-col gap-3 flex-1">
-                    {visibleItems.map((quest) => (
-                        <div
-                            key={quest.id}
-                            className="flex justify-start items-center w-53 h-13 !m-2 !mb-0 bg-white rounded-xl hover:bg-gray-400 cursor-pointer"
-                        >
-                            <Checkbox className="!ml-2" />
-                            <h3 className="font-semibold !ml-2">{quest.title}</h3>
-                        </div>
-                    ))}
+                    {visibleItems.map((quest) => {
+                        const isChecked = quest.is_completed;
+                        return (
+                            <div
+                                key={quest.id}
+                                className="flex justify-start items-center w-53 h-13 !m-2 !mb-0 bg-white rounded-xl hover:bg-gray-400 cursor-pointer"
+                            >
+                                <Checkbox
+                                    className="!ml-2"
+                                    checked={isChecked}
+                                    onCheckedChange={() => handleCheckQuest(quest.id, isChecked)} />
+                                <h3 className="font-semibold !ml-2">{quest.title}</h3>
+                                <Trash2 className="!ml-auto !mr-2 hover:text-red-500 cursor-pointer" onClick={() => handleDeleteQuest(quest.id)} />
+                            </div>
+                        );
+                    })}
                     {visibleItems.length < ITEMS_PER_PAGE && (
                         <div className="flex justify-center items-center">
                             <Plus className="!mt-2 border-2 border-black rounded-full cursor-pointer" onClick={handleOpenModal}></Plus>
